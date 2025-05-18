@@ -40,3 +40,28 @@ dist/
 
 # StudentHelper.mlmodel
 StudentHelper.mlmodel
+
+# Ignore node_modules in NestJS project
+apis/backend/node_modules/
+
+# Ignore .env and local environment files
+apis/backend/.env
+apis/backend/.env.*
+
+# Ignore dist folder (Nest build output)
+apis/backend/dist/
+
+# Ignore logs
+apis/backend/logs/
+apis/backend/*.log
+
+# Ignore coverage report (if you're using Jest)
+apis/backend/coverage/
+
+# Ignore IDE settings
+apis/backend/.vscode/
+apis/backend/.DS_Store
+
+# Ignore build cache or temporary files
+apis/backend/tmp/
+apis/backend/.cache/
