@@ -1,0 +1,89 @@
+{
+  "academic_year_2024": {
+    "thresholds": {
+      "under_performing": 60,
+      "subject_thresholds": {
+        "math": 55,
+        "science": 65
+      },
+      "min_critical_subjects": 1,
+      "use_ml_suggestions": true,
+      "ml_score_range": [
+        20,
+        80
+      ]
+    },
+    "students": {
+      "azhar": {
+        "subjects": {
+          "math": [
+            58,
+            62,
+            59
+          ],
+          "science": [
+            72,
+            68,
+            75
+          ]
+        }
+      },
+      "ahmed": {
+        "subjects": {
+          "math": [
+            58,
+            62,
+            59
+          ],
+          "science": [
+            72,
+            68,
+            75
+          ]
+        }
+      },
+      "alice": {
+        "subjects": {
+          "math": [
+            58,
+            62,
+            59
+          ],
+          "science": [
+            72,
+            68,
+            75
+          ]
+        }
+      },
+      "bob": {
+        "subjects": {
+          "math": [
+            1,
+            2,
+            3
+          ],
+          "science": [
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      "tom": {
+        "subjects": {
+          "math": [
+            1,
+            2,
+            3
+          ],
+          "science": [
+            1,
+            2,
+            3
+          ]
+        }
+      }
+    }
+  }
+}
