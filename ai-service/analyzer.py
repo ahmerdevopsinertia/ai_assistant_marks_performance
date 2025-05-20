@@ -65,8 +65,8 @@ def train_model(df):
 
 # 3. Generate recommendations
 def analyze(year):
-  
-df, thresholds = load_data(year)
+    
+    df, thresholds = load_data(year)
     
     # 1. Set defaults directly in the thresholds dictionary
     thresholds.setdefault('min_critical_subjects', 1)
@@ -91,8 +91,8 @@ df, thresholds = load_data(year)
             
 						# Get prediction probabilities safely	
             try:
-                      print(f"Class distribution: {np.bincount(model.predict(X_pred))}")
-                      print(f"Proba shape: {model.predict_proba(X_pred).shape if hasattr(model, 'predict_proba') else 'N/A'}")
+                    #   print(f"Class distribution: {np.bincount(model.predict(X_pred))}")
+                    #   print(f"Proba shape: {model.predict_proba(X_pred).shape if hasattr(model, 'predict_proba') else 'N/A'}")
                       probas = model.predict_proba(X_pred)
                         # Handle binary and multi-class cases
                       if probas.shape[1] == 2:  # Binary classification

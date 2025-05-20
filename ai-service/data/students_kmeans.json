@@ -1,96 +1,90 @@
 {
   "academic_year_2024": {
+    "students": {
+      "student1": {
+        "subjects": {
+          "math": [
+            80,
+            85,
+            90
+          ],
+          "science": [
+            70,
+            75,
+            80
+          ]
+        }
+      },
+      "student2": {
+        "subjects": {
+          "math": [
+            60,
+            65,
+            70
+          ],
+          "science": [
+            50,
+            55,
+            60
+          ]
+        }
+      },
+      "student3": {
+        "subjects": {
+          "math": [
+            11,
+            12,
+            13
+          ],
+          "science": [
+            21,
+            31,
+            41
+          ]
+        }
+      },
+      "student4": {
+        "subjects": {
+          "math": [
+            61,
+            51,
+            33
+          ],
+          "science": [
+            15,
+            17,
+            91
+          ]
+        }
+      },
+      "student5": {
+        "subjects": {
+          "math": [
+            88,
+            77,
+            66
+          ],
+          "science": [
+            55,
+            44,
+            33
+          ]
+        }
+      }
+    },
     "thresholds": {
+      "min_critical_subjects": 1,
+      "subject_thresholds": [
+        "math",
+        "science"
+      ],
       "kmeans": {
         "n_clusters": 3,
         "features": [
           "avg_score",
-          "volatility"
+          "trend"
         ],
         "subject_weight": 0.3
-      },
-      "under_performing": 60,
-      "subject_thresholds": {
-        "math": 55,
-        "science": 65
-      },
-      "min_critical_subjects": 1,
-      "use_ml_suggestions": true,
-      "ml_score_range": [
-        20,
-        80
-      ]
-    },
-    "students": {
-      "azhar": {
-        "subjects": {
-          "math": [
-            58,
-            62,
-            59
-          ],
-          "science": [
-            72,
-            68,
-            75
-          ]
-        }
-      },
-      "ahmed": {
-        "subjects": {
-          "math": [
-            58,
-            62,
-            59
-          ],
-          "science": [
-            72,
-            68,
-            75
-          ]
-        }
-      },
-      "alice": {
-        "subjects": {
-          "math": [
-            58,
-            62,
-            59
-          ],
-          "science": [
-            72,
-            68,
-            75
-          ]
-        }
-      },
-      "bob": {
-        "subjects": {
-          "math": [
-            1,
-            2,
-            3
-          ],
-          "science": [
-            1,
-            2,
-            3
-          ]
-        }
-      },
-      "tom": {
-        "subjects": {
-          "math": [
-            1,
-            2,
-            3
-          ],
-          "science": [
-            1,
-            2,
-            3
-          ]
-        }
       }
     }
   }

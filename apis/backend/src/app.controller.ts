@@ -14,4 +14,9 @@ export class AppController {
   async analyzeYear(@Body() { year }: { year: number }) {
     return this.appService.analyzeAcademicYear(year);
   }
+
+  @Post('/analysis/yearly/kmeans')
+  async analyzeYearKmeans(@Body() { year }: { year: number }) {
+    return this.appService.analyzeAcademicYearKmeans(year);
+  }
 }
