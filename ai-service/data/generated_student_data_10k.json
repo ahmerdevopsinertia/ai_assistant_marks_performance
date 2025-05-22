@@ -1,0 +1,159 @@
+{
+  "academic_year_2024": {
+    "thresholds": {
+      "under_performing": 60,
+      "subject_thresholds": {
+        "math": 55,
+        "science": 65
+      },
+      "min_critical_subjects": 1,
+      "use_ml_suggestions": true,
+      "ml_score_range": [
+        20,
+        80
+      ]
+    },
+    "students": {
+      "whitescott": {
+        "subjects": {
+          "math": [
+            88,
+            92,
+            97
+          ],
+          "science": [
+            90,
+            92,
+            97
+          ]
+        }
+      },
+      "anthonyjohnson": {
+        "subjects": {
+          "math": [
+            94,
+            100,
+            89
+          ],
+          "science": [
+            88,
+            86,
+            88
+          ]
+        }
+      },
+      "bellsteven": {
+        "subjects": {
+          "math": [
+            98,
+            94,
+            88
+          ],
+          "science": [
+            100,
+            100,
+            92
+          ]
+        }
+      },
+      "ywatson": {
+        "subjects": {
+          "math": [
+            93,
+            95,
+            86
+          ],
+          "science": [
+            99,
+            89,
+            100
+          ]
+        }
+      },
+      "yavery": {
+        "subjects": {
+          "math": [
+            89,
+            89,
+            96
+          ],
+          "science": [
+            93,
+            94,
+            99
+          ]
+        }
+      },
+      "agross": {
+        "subjects": {
+          "math": [
+            97,
+            100,
+            86
+          ],
+          "science": [
+            95,
+            97,
+            98
+          ]
+        }
+      },
+      "christian24": {
+        "subjects": {
+          "math": [
+            85,
+            91,
+            97
+          ],
+          "science": [
+            87,
+            94,
+            86
+          ]
+        }
+      },
+      "howardalison": {
+        "subjects": {
+          "math": [
+            98,
+            94,
+            100
+          ],
+          "science": [
+            92,
+            89,
+            96
+          ]
+        }
+      },
+      "ashley48": {
+        "subjects": {
+          "math": [
+            100,
+            91,
+            86
+          ],
+          "science": [
+            94,
+            92,
+            87
+          ]
+        }
+      },
+      "eric06": {
+        "subjects": {
+          "math": [
+            85,
+            91,
+            87
+          ],
+          "science": [
+            95,
+            99,
+            98
+          ]
+        }
+      }
+    }
+  }
+}

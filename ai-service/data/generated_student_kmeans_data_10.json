@@ -1,0 +1,161 @@
+{
+  "academic_year_2024": {
+    "thresholds": {
+      "min_critical_subjects": 1,
+      "subject_thresholds": [
+        "math",
+        "science"
+      ],
+      "kmeans": {
+        "n_clusters": 3,
+        "features": [
+          "avg_score",
+          "trend"
+        ],
+        "subject_weight": 0.3
+      }
+    },
+    "students": {
+      "ediaz": {
+        "subjects": {
+          "math": [
+            51,
+            55,
+            58
+          ],
+          "science": [
+            43,
+            49,
+            54
+          ]
+        }
+      },
+      "lynnjustin": {
+        "subjects": {
+          "math": [
+            13,
+            18,
+            23
+          ],
+          "science": [
+            21,
+            32,
+            38
+          ]
+        }
+      },
+      "meadowsdiana": {
+        "subjects": {
+          "math": [
+            60,
+            69,
+            70
+          ],
+          "science": [
+            56,
+            63,
+            71
+          ]
+        }
+      },
+      "brittanybaldwin": {
+        "subjects": {
+          "math": [
+            8,
+            19,
+            37
+          ],
+          "science": [
+            8,
+            11,
+            16
+          ]
+        }
+      },
+      "teresa42": {
+        "subjects": {
+          "math": [
+            59,
+            58,
+            57
+          ],
+          "science": [
+            72,
+            60,
+            56
+          ]
+        }
+      },
+      "abigail04": {
+        "subjects": {
+          "math": [
+            38,
+            29,
+            26
+          ],
+          "science": [
+            40,
+            36,
+            9
+          ]
+        }
+      },
+      "delgadomatthew": {
+        "subjects": {
+          "math": [
+            23,
+            22,
+            21
+          ],
+          "science": [
+            24,
+            17,
+            8
+          ]
+        }
+      },
+      "sarah87": {
+        "subjects": {
+          "math": [
+            38,
+            16,
+            13
+          ],
+          "science": [
+            23,
+            15,
+            8
+          ]
+        }
+      },
+      "xhoffman": {
+        "subjects": {
+          "math": [
+            37,
+            34,
+            6
+          ],
+          "science": [
+            40,
+            37,
+            27
+          ]
+        }
+      },
+      "catherinewilson": {
+        "subjects": {
+          "math": [
+            2,
+            27,
+            33
+          ],
+          "science": [
+            10,
+            16,
+            28
+          ]
+        }
+      }
+    }
+  }
+}

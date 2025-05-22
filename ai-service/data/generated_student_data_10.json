@@ -1,0 +1,159 @@
+{
+  "academic_year_2024": {
+    "thresholds": {
+      "under_performing": 60,
+      "subject_thresholds": {
+        "math": 55,
+        "science": 65
+      },
+      "min_critical_subjects": 1,
+      "use_ml_suggestions": true,
+      "ml_score_range": [
+        20,
+        80
+      ]
+    },
+    "students": {
+      "lisaford": {
+        "subjects": {
+          "math": [
+            86,
+            93,
+            95
+          ],
+          "science": [
+            85,
+            93,
+            93
+          ]
+        }
+      },
+      "longcheryl": {
+        "subjects": {
+          "math": [
+            100,
+            91,
+            86
+          ],
+          "science": [
+            96,
+            91,
+            91
+          ]
+        }
+      },
+      "philipbenton": {
+        "subjects": {
+          "math": [
+            74,
+            87,
+            81
+          ],
+          "science": [
+            70,
+            79,
+            79
+          ]
+        }
+      },
+      "fleminglance": {
+        "subjects": {
+          "math": [
+            72,
+            77,
+            86
+          ],
+          "science": [
+            71,
+            79,
+            85
+          ]
+        }
+      },
+      "umartinez": {
+        "subjects": {
+          "math": [
+            61,
+            57,
+            59
+          ],
+          "science": [
+            71,
+            68,
+            64
+          ]
+        }
+      },
+      "brent72": {
+        "subjects": {
+          "math": [
+            59,
+            62,
+            71
+          ],
+          "science": [
+            62,
+            66,
+            72
+          ]
+        }
+      },
+      "christopherkaiser": {
+        "subjects": {
+          "math": [
+            42,
+            56,
+            60
+          ],
+          "science": [
+            43,
+            44,
+            46
+          ]
+        }
+      },
+      "knightclaire": {
+        "subjects": {
+          "math": [
+            54,
+            42,
+            40
+          ],
+          "science": [
+            60,
+            46,
+            45
+          ]
+        }
+      },
+      "westblake": {
+        "subjects": {
+          "math": [
+            41,
+            34,
+            32
+          ],
+          "science": [
+            44,
+            40,
+            33
+          ]
+        }
+      },
+      "wilsondebbie": {
+        "subjects": {
+          "math": [
+            38,
+            33,
+            35
+          ],
+          "science": [
+            44,
+            32,
+            41
+          ]
+        }
+      }
+    }
+  }
+}

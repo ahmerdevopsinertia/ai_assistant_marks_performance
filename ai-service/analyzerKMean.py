@@ -13,7 +13,7 @@ import numpy as np  # Add this import at the top
 SCRIPT_DIR = Path(__file__).parent.resolve()
 
 # 2. Construct absolute path to data
-DATA_PATH = SCRIPT_DIR / "data" / "students_kmeans.json"  # Adjusted path
+DATA_PATH = SCRIPT_DIR / "data" / "generated_student_kmeans_data_10.json"  # Adjusted path
 
 # print(f"Debug Info:")
 # print(f"Python Executable: {sys.executable}")
@@ -42,45 +42,6 @@ def load_data(year):
 
     df = pd.DataFrame(records)
     return df, raw_data["thresholds"]
-
-
-# 2. Train prediction model
-# def train_model(df):
-#     # Encode categorical features
-#     le = LabelEncoder() # check the purpose of it
-#     X = df[['subject', 'avg_score']].copy()
-#     X['subject'] = le.fit_transform(X['subject']) # check the purpose of it
-
-#     scaler = StandardScaler()
-#     X_scaled = scaler.fit_transform(X)
-
-#      # 3. Cluster students into 3 groups (adjustable)
-#     kmeans = KMeans(n_clusters=3, random_state=42)
-#     df['cluster'] = kmeans.fit_predict(X_scaled)
-
-
-#     # 4. Identify which cluster represents under-performers
-#     # (Assuming cluster with lowest avg_score is under-performers)
-#     worst_cluster = df.groupby('cluster')['avg_score'].mean().idxmin()
-#     df['critical'] = (df['cluster'] == worst_cluster).astype(int)
-
-#     # 5. Convert to CoreML (using a surrogate model)
-#     # KMeans isn't directly convertible, so we'll use a simple classifier
-#     surrogate = LogisticRegression()
-#     surrogate.fit(X_scaled, df['critical'])
-
-#     coreml_model = ct.converters.sklearn.convert(
-#         surrogate,
-#         input_features=[
-#             {'name': 'subject', 'type': 'int64'},
-#             {'name': 'avg_score', 'type': 'double'}
-#         ],
-#         output_feature_names='needs_help'
-#     )
-#     coreml_model.save('StudentHelper.mlmodel')
-
-#     return kmeans, le, scaler
-
 
 def train_model(df, thresholds=None):
     """Enhanced KMeans training with configurable clustering"""
@@ -130,10 +91,10 @@ def train_model(df, thresholds=None):
             .rename(columns={"student": "count"})
         )
         
-				# Flatten the multi-index columns
+		# Flatten the multi-index columns
         cluster_profiles.columns = ['_'.join(col).strip() for col in cluster_profiles.columns.values]
     
-    			# Convert to dictionary
+    	# Convert to dictionary
         cluster_dict = cluster_profiles.to_dict()
 
         # Identify worst cluster (lowest average score)
