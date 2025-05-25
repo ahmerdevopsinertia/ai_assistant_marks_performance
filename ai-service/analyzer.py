@@ -71,25 +71,27 @@ def train_model(df):
 
 # 3. Generate recommendations
 def analyze(year):
-
     df, thresholds = load_data(year)
 
-    # 1. Set defaults directly in the thresholds dictionary
+    # 1. Set defaults
     thresholds.setdefault("min_critical_subjects", 1)
     thresholds.setdefault("use_ml_suggestions", True)
     thresholds.setdefault("ml_score_range", [20, 80])
+    thresholds.setdefault("under_performing", 60)  # Add default if missing
 
-    # 2. Apply absolute thresholds (always active)
+    # 2. Calculate overall averages per student
+    student_overall_avg = df.groupby('student')['avg_score'].mean()
+
+    # 3. Apply absolute thresholds
     df["critical"] = df.apply(
         lambda row: (
-            1
-            if row["avg_score"] < thresholds["subject_thresholds"][row["subject"]]
+            1 if row["avg_score"] < thresholds["subject_thresholds"][row["subject"]] 
             else 0
         ),
         axis=1,
     )
 
-    # 3. Conditional ML analysis
+    # 4. Conditional ML analysis
     ml_insights = {"method_used": "absolute_thresholds"}
     if (
         thresholds["use_ml_suggestions"]
@@ -101,96 +103,51 @@ def analyze(year):
             X_pred["subject"] = le.transform(X_pred["subject"])
             df["ml_critical"] = model.predict(X_pred)
 
-            # Get prediction probabilities safely
+            # Get prediction probabilities
             try:
-                #   print(f"Class distribution: {np.bincount(model.predict(X_pred))}")
-                #   print(f"Proba shape: {model.predict_proba(X_pred).shape if hasattr(model, 'predict_proba') else 'N/A'}")
                 probas = model.predict_proba(X_pred)
-                # Handle binary and multi-class cases
-                if probas.shape[1] == 2:  # Binary classification
-                    confidence = probas[:, 1]  # P(class=1)
-                else:  # Single class or multi-class edge case
-                    confidence = (
-                        probas[:, 0] if probas.shape[1] == 1 else probas.max(axis=1)
-                    )
+                confidence = probas[:, 1] if probas.shape[1] == 2 else probas.max(axis=1)
             except AttributeError:
-                # Fallback for models without predict_proba
-                confidence = np.ones(len(X_pred)) * 0.5  # Default confidence
+                confidence = np.ones(len(X_pred)) * 0.5
 
-                # Calculate boundary cases (relative to threshold)
-                threshold = df["avg_score"].quantile(0.3)
-                boundary_mask = (df["avg_score"] - threshold).abs() < (
-                    0.05 * threshold
-                )  # 5% margin
+            ml_insights.update({
+                "feature_importances": dict(zip(["subject", "avg_score"], model.feature_importances_)),
+                "method_used": "hybrid_threshold_ml",
+                "confidence_metrics": {
+                    "min": float(np.min(confidence)),
+                    "max": float(np.max(confidence)),
+                    "mean": float(np.mean(confidence)),
+                },
+                "tree_votes": {
+                    "total_trees": getattr(model, "n_estimators", 1),
+                    "avg_agree": float(np.mean(confidence) * getattr(model, "n_estimators", 1)),
+                }
+            })
 
-                ml_insights.update(
-                    {
-                        "feature_importances": dict(
-                            zip(["subject", "avg_score"], model.feature_importances_)
-                        ),
-                        "method_used": "hybrid_threshold_ml",
-                        "confidence_metrics": {
-                            "min": float(np.min(confidence)),
-                            "max": float(np.max(confidence)),
-                            "mean": float(np.mean(confidence)),
-                        },
-                        "tree_votes": {
-                            "total_trees": getattr(model, "n_estimators", 1),
-                            "avg_agree": float(
-                                np.mean(confidence) * getattr(model, "n_estimators", 1)
-                            ),
-                        },
-                        "boundary_analysis": {
-                            "threshold": float(threshold),
-                            "margin": float(0.05 * threshold),
-                            "cases": df[boundary_mask][
-                                ["student", "subject", "avg_score"]
-                            ]
-                            .head(3)
-                            .to_dict("records"),
-                        },
-                    }
-                )
-
-            # # Get prediction probabilities for all students
-            # probas = model.predict_proba(X_pred)  # Array of [P(0), P(1)] per sample
-
-            # # Calculate boundary cases (within 5% of threshold)
-            # boundary_mask = (df['avg_score'] - df['avg_score'].quantile(0.3)).abs() < 5
-
-            #             # Combine ML with thresholds
-            # df['critical'] = df.apply(
-            #                 lambda row: 1 if (row['critical'] == 1) or (row['ml_critical'] == 1)
-            #                            else 0,
-            #                 axis=1
-            #             )
-            # ml_insights.update({
-            #     'feature_importances': dict(zip(['subject', 'avg_score'], model.feature_importances_)),
-            #     'method_used': 'hybrid_threshold_ml',
-            #     'confidence_metrics': {
-        # 			'min': float(probas[:, 1].min()),
-        # 			'max': float(probas[:, 1].max()),
-        # 			'mean': float(probas[:, 1].mean())
-        # 		},
-        # 		'tree_votes': {
-        #    		'total_trees': model.n_estimators,
-        #   		'avg_agree': float(probas[:, 1].mean() * model.n_estimators)
-        # 		},
-        # 		'boundary_cases': {
-        # 			'count': int(boundary_mask.sum()),
-        # 			'examples': df[boundary_mask][['student', 'subject', 'avg_score']]
-        #        .head(3).to_dict('records')  # Top 3 examples
-        # 		}
-        # })
+            # Combine ML predictions with thresholds
+            df["critical"] = df.apply(
+                lambda row: 1 if (row["critical"] == 1) or (row["ml_critical"] == 1)
+                           else 0,
+                axis=1
+            )
+            
         except Exception as e:
             ml_insights["ml_error"] = str(e)
 
-    # 4. Generate results
+    # 5. Generate results with proper under_performing check
     critical_counts = df.groupby("student")["critical"].sum()
+    critical_students = critical_counts[
+        critical_counts >= thresholds["min_critical_subjects"]
+    ].index.tolist()
+    
+    # Apply under_performing threshold correctly
+    under_performing = [
+        student for student in critical_students
+        if student_overall_avg[student] < thresholds["under_performing"]
+    ]
+
     return {
-        "under_performing": critical_counts[
-            critical_counts >= thresholds["min_critical_subjects"]
-        ].index.tolist(),
+        "under_performing": under_performing,
         "subject_analysis": {
             subject: {
                 "critical_students": df[
