@@ -80,12 +80,13 @@ def analyze(year):
     thresholds.setdefault("under_performing", 60)  # Add default if missing
 
     # 2. Calculate overall averages per student
-    student_overall_avg = df.groupby('student')['avg_score'].mean()
+    student_overall_avg = df.groupby("student")["avg_score"].mean()
 
     # 3. Apply absolute thresholds
     df["critical"] = df.apply(
         lambda row: (
-            1 if row["avg_score"] < thresholds["subject_thresholds"][row["subject"]] 
+            1
+            if row["avg_score"] < thresholds["subject_thresholds"][row["subject"]]
             else 0
         ),
         axis=1,
@@ -106,31 +107,40 @@ def analyze(year):
             # Get prediction probabilities
             try:
                 probas = model.predict_proba(X_pred)
-                confidence = probas[:, 1] if probas.shape[1] == 2 else probas.max(axis=1)
+                confidence = (
+                    probas[:, 1] if probas.shape[1] == 2 else probas.max(axis=1)
+                )
             except AttributeError:
                 confidence = np.ones(len(X_pred)) * 0.5
 
-            ml_insights.update({
-                "feature_importances": dict(zip(["subject", "avg_score"], model.feature_importances_)),
-                "method_used": "hybrid_threshold_ml",
-                "confidence_metrics": {
-                    "min": float(np.min(confidence)),
-                    "max": float(np.max(confidence)),
-                    "mean": float(np.mean(confidence)),
-                },
-                "tree_votes": {
-                    "total_trees": getattr(model, "n_estimators", 1),
-                    "avg_agree": float(np.mean(confidence) * getattr(model, "n_estimators", 1)),
+            ml_insights.update(
+                {
+                    "feature_importances": dict(
+                        zip(["subject", "avg_score"], model.feature_importances_)
+                    ),
+                    "method_used": "hybrid_threshold_ml",
+                    "confidence_metrics": {
+                        "min": float(np.min(confidence)),
+                        "max": float(np.max(confidence)),
+                        "mean": float(np.mean(confidence)),
+                    },
+                    "tree_votes": {
+                        "total_trees": getattr(model, "n_estimators", 1),
+                        "avg_agree": float(
+                            np.mean(confidence) * getattr(model, "n_estimators", 1)
+                        ),
+                    },
                 }
-            })
+            )
 
             # Combine ML predictions with thresholds
             df["critical"] = df.apply(
-                lambda row: 1 if (row["critical"] == 1) or (row["ml_critical"] == 1)
-                           else 0,
-                axis=1
+                lambda row: (
+                    1 if (row["critical"] == 1) or (row["ml_critical"] == 1) else 0
+                ),
+                axis=1,
             )
-            
+
         except Exception as e:
             ml_insights["ml_error"] = str(e)
 
@@ -139,10 +149,11 @@ def analyze(year):
     critical_students = critical_counts[
         critical_counts >= thresholds["min_critical_subjects"]
     ].index.tolist()
-    
+
     # Apply under_performing threshold correctly
     under_performing = [
-        student for student in critical_students
+        student
+        for student in critical_students
         if student_overall_avg[student] < thresholds["under_performing"]
     ]
 

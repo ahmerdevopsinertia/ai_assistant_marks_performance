@@ -15,6 +15,11 @@ export class AppController {
     return this.appService.analyzeAcademicYear(year);
   }
 
+  @Post('/analysis/yearly/enhanced')
+  async analyzeYearEnhanced(@Body() { year }: { year: number }) {
+    return this.appService.analyzeAcademicYearEnhanced(year);
+  }
+
   @Post('/analysis/yearly/kmeans')
   async analyzeYearKmeans(@Body() { year }: { year: number }) {
     return this.appService.analyzeAcademicYearKmeans(year);
