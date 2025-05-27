@@ -1,16 +1,21 @@
-import { Injectable } from '@nestjs/common';
 // import { spawn } from 'child_process';
 import { ConfigService } from '@nestjs/config';
 import { resolve } from 'path';
 import { PythonShell } from 'python-shell';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
+import { Injectable } from '@nestjs/common';
+import { AnalysisService } from './analysis.service';
+
 @Injectable()
 export class AppService {
 
   ANALYSIS_SERVICES: string;
 
-  constructor(private config: ConfigService, private httpService: HttpService) {
+  constructor(private config: ConfigService,
+    private httpService: HttpService,
+    private readonly analysisService: AnalysisService,
+  ) {
     // Initialize any necessary properties or services here
     const analysisServicePath = this.config.get('ANALYSIS_SERVICE_PATH');
     this.ANALYSIS_SERVICES = resolve(process.cwd(), analysisServicePath);
@@ -107,14 +112,7 @@ export class AppService {
           if (parsed.error) {
             reject(parsed);
           } else {
-            // const result: any = {
-            //   ...parsed,
-            //   year: '',
-            //   analysis: ''
-            // };
-            // resolve(result);
-
-            this.analysisLLM(parsed)
+            this.analysisService.analysisLLM(parsed)
               .then((response: string) => {
                 const result = {
                   ...parsed,

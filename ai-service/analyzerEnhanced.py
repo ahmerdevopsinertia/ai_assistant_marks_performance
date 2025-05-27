@@ -7,6 +7,16 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 import coremltools as ct
 from pathlib import Path
+from llama_cpp import Llama  # For loading GGUF models
+
+# Load Mistral (do this once at startup)
+mistral = Llama(
+    model_path="mistral-7b-instruct-v0.2.Q5_K_M.gguf",
+    n_ctx=2048,  # Context window size
+    n_threads=4,  # CPU threads
+)
+
+# analyzer enhnanced with mistral model
 
 # 1. Get the directory where THIS script lives
 SCRIPT_DIR = Path(__file__).parent.resolve()
@@ -28,9 +38,7 @@ def load_data(year):
 
     # Convert to Pandas DataFrame
     records = []
-    TOTAL_RECORDS = 0
     for student, details in raw_data["students"].items():
-        TOTAL_RECORDS += 1  # Increment total records count
         for subject, grades in details["subjects"].items():
             records.append(
                 {
@@ -41,9 +49,8 @@ def load_data(year):
                 }
             )
 
-    # TOTAL_RECORDS = len(records).unique()  # Update total records count
     df = pd.DataFrame(records)
-    return df, raw_data["thresholds"], TOTAL_RECORDS
+    return df, raw_data["thresholds"]
 
 
 # 2. Train prediction model
@@ -74,7 +81,7 @@ def train_model(df):
 
 # 3. Generate recommendations
 def analyze(year):
-    df, thresholds, TOTAL_RECORDS = load_data(year)
+    df, thresholds = load_data(year)
 
     # 1. Set defaults
     thresholds.setdefault("min_critical_subjects", 1)
@@ -159,7 +166,11 @@ def analyze(year):
         for student in critical_students
         if student_overall_avg[student] < thresholds["under_performing"]
     ]
-
+    
+		# Usage in analyze():
+    for student in under_performing:
+        student_data = df[df["student"] == student].to_dict()
+  
     return {
         "under_performing": under_performing,
         "subject_analysis": {
@@ -171,8 +182,8 @@ def analyze(year):
             }
             for subject in thresholds["subject_thresholds"]
         },
+        "student_data":student_data,
         "analysis_metadata": ml_insights,
-        "total_records": TOTAL_RECORDS,
     }
 
 
@@ -186,12 +197,49 @@ def generate_actions(subject, trend):
     return base_actions.get(subject, ["General tutoring recommended"])
 
 
+def generate_ai_actions(student_data):
+    prompt = f"""
+    Given this student's performance:
+    {student_data}
+    
+    Suggest 3 personalized interventions considering:
+    - Their scores and trend
+    - Common learning gaps in their subject
+    - Practical classroom strategies
+    """
+
+    return mistral.create_completion(prompt, max_tokens=300)["choices"][0]["text"]
+
+
+def explain_analysis(results):
+    prompt = f"""
+    Analyze this student performance report and summarize key insights:
+    {json.dumps(results, indent=2)}
+    
+    Focus on:
+    - Underperforming students
+    - Subject-wise weaknesses
+    - Recommended actions
+    """
+
+    output = mistral.create_completion(prompt, max_tokens=500)
+    return output["choices"][0]["text"]
+
+
 if __name__ == "__main__":
     year = sys.argv[1]
     try:
         result = analyze(year)
         # Only print the final JSON output
         print(json.dumps(result))
+
+        # Add Mistral explanation
+        # print("\n=== AI Insights ===")
+        # print(explain_analysis(result))
+    
+    
     except Exception as e:
         # Error handling as JSON
         print(json.dumps({"error": str(e)}))
+    finally:
+        print("Analysis process completed.")
